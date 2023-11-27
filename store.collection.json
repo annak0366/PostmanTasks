@@ -16,62 +16,6 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// const baseUrl = pm.variables.get('baseUrl');\r",
-									"// const endpoint = '/products';\r",
-									"// const requestData = {\r",
-									"//     'name': 'orange',\r",
-									"//     'price': 20,\r",
-									"//     'sku': 123321123,\r",
-									"//     'description': 'wouh'\r",
-									"// };\r",
-									"// pm.sendRequest({\r",
-									"//     url: baseUrl + endpoint,\r",
-									"//     method: 'POST',\r",
-									"//     header: { 'Content-Type': 'application/json' },\r",
-									"//     body: {\r",
-									"//         mode: 'raw',\r",
-									"//         raw: JSON.stringify(requestData)\r",
-									"//     }\r",
-									"// }, function (err, response) {\r",
-									"//     pm.test('Response time is less than 200ms', function () {\r",
-									"//         pm.expect(response.responseTime).to.be.below(200);\r",
-									"//     });\r",
-									"//     pm.test('Status code is 201', function () {\r",
-									"//         pm.expect(response.code).to.equal(201);\r",
-									"//     });\r",
-									"//     pm.test('Content-Type is present', function () {\r",
-									"//         pm.expect(response.headers.has('Content-Type')).to.be.true;\r",
-									"//     });\r",
-									"\r",
-									"//     pm.test('Checking the product creation and schema verification', function () {\r",
-									"//         const createdProductId = response.json().id;\r",
-									"//         pm.sendRequest({\r",
-									"//             url: `${baseUrl}/products/${createdProductId}`,\r",
-									"//             method: 'GET'\r",
-									"//             }, function (err, getProductResponse) {\r",
-									"//                 pm.expect(getProductResponse.code).to.equal(200);\r",
-									"//                 const createdProductData = getProductResponse.json();\r",
-									"//                 pm.expect(createdProductData.name).to.eql(requestData.name);\r",
-									"//                 pm.expect(createdProductData.price).to.eql(requestData.price);\r",
-									"//                 pm.expect(createdProductData.sku).to.eql(requestData.sku);\r",
-									"//                 pm.expect(createdProductData.description).to.eql(requestData.description);\r",
-									"//                 var jsonSchema = {\r",
-									"//                     \"type\": \"object\",\r",
-									"//                     \"properties\": {\r",
-									"//                     \"name\": {\"type\": \"string\"},\r",
-									"//                     \"price\": {\"type\": \"integer\"},\r",
-									"//                     \"sku\": {\"type\": \"integer\"},\r",
-									"//                     \"description\": {\"type\": \"string\"},\r",
-									"//                     \"id\": {\"type\": \"integer\"}\r",
-									"//                 },\r",
-									"//                 \"required\": [\"id\", \"name\", \"price\", \"sku\", \"description\"]\r",
-									"//                 };\r",
-									"//                 pm.expect(getProductResponse.json()).to.have.jsonSchema(jsonSchema);\r",
-									"//         });\r",
-									"//     });\r",
-									"// });\r",
-									"\r",
-									"\r",
 									"const baseUrl = pm.variables.get('baseUrl');\r",
 									"const endpoint = '/products';\r",
 									"const requestData = {\r",
@@ -80,8 +24,6 @@
 									"    'sku': 123321123,\r",
 									"    'description': 'wouh'\r",
 									"};\r",
-									"\r",
-									"// POST request to create a product\r",
 									"pm.sendRequest({\r",
 									"    url: baseUrl + endpoint,\r",
 									"    method: 'POST',\r",
@@ -101,22 +43,12 @@
 									"        pm.expect(response.headers.has('Content-Type')).to.be.true;\r",
 									"    });\r",
 									"\r",
-									"    // Check the product creation and schema verification\r",
 									"    const createdProductId = response.json().id;\r",
 									"    pm.sendRequest({\r",
 									"        url: `${baseUrl}/products/${createdProductId}`,\r",
 									"        method: 'GET'\r",
 									"    }, function (err, getProductResponse) {\r",
-									"        pm.expect(getProductResponse.code).to.equal(200);\r",
 									"        const createdProductData = getProductResponse.json();\r",
-									"\r",
-									"        // Assertions for the created product\r",
-									"        pm.expect(createdProductData.name).to.eql(requestData.name);\r",
-									"        pm.expect(createdProductData.price).to.eql(requestData.price);\r",
-									"        pm.expect(createdProductData.sku).to.eql(requestData.sku);\r",
-									"        pm.expect(createdProductData.description).to.eql(requestData.description);\r",
-									"\r",
-									"        // JSON schema verification\r",
 									"        var jsonSchema = {\r",
 									"            \"type\": \"object\",\r",
 									"            \"properties\": {\r",
@@ -128,10 +60,18 @@
 									"            },\r",
 									"            \"required\": [\"id\", \"name\", \"price\", \"sku\", \"description\"]\r",
 									"        };\r",
-									"        pm.expect(createdProductData).to.have.jsonSchema(jsonSchema);\r",
+									"        pm.expect(getProductResponse.code).to.equal(200);\r",
+									"        pm.test('Created product verification', () => {\r",
+									"            pm.expect(createdProductData.name).to.eql(requestData.name);\r",
+									"            pm.expect(createdProductData.price).to.eql(requestData.price);\r",
+									"            pm.expect(createdProductData.sku).to.eql(requestData.sku);\r",
+									"            pm.expect(createdProductData.description).to.eql(requestData.description);\r",
+									"        });\r",
+									"        pm.test('Created product validation', () => {\r",
+									"            pm.expect(createdProductData).to.have.jsonSchema(jsonSchema);\r",
+									"        });\r",
 									"    });\r",
-									"});\r",
-									""
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -177,39 +117,38 @@
 								"exec": [
 									"const baseUrl = pm.variables.get('baseUrl');\r",
 									"const endpoint = '/products';\r",
+									"const requestUrl = baseUrl + endpoint;\r",
+									"var schema = {\r",
+									"    'type': 'array',\r",
+									"    'items': [{\r",
+									"            'type': 'object',\r",
+									"            'properties': {\r",
+									"                'id': { 'type': 'integer' },\r",
+									"                'name': { 'type': 'string' },\r",
+									"                'sku': { 'type': 'integer' },\r",
+									"                'description': { 'type': 'string' }\r",
+									"            },\r",
+									"            'required': ['id','name','sku','description']\r",
+									"        }]\r",
+									"};\r",
 									"\r",
-									"pm.sendRequest({\r",
-									"    url: baseUrl + endpoint,\r",
-									"    method: 'GET',\r",
-									"}, function (err, response) {\r",
-									"    pm.test(\"Response time is less than 200ms\", function () {\r",
-									"        pm.expect(response.responseTime).to.be.below(200);\r",
-									"    });\r",
-									"    pm.test(\"Status code is 200\", function () {\r",
-									"        pm.expect(response.code).to.equal(200);\r",
-									"    });\r",
-									"    pm.test(\"Content-Type is present\", function () {\r",
-									"        pm.expect(response.headers.has(\"Content-Type\")).to.be.true;\r",
-									"    });\r",
-									"    pm.test('Response should match JSON schema', function () {\r",
-									"        var jsonSchema = {\r",
-									"            \"type\": \"array\",\r",
-									"            \"items\": {\r",
-									"                \"type\": \"object\",\r",
-									"                \"properties\": {\r",
-									"                    \"id\": { \"type\": \"number\" },\r",
-									"                    \"name\": { \"type\": \"string\" },\r",
-									"                    \"price\": { \"type\": \"number\" },\r",
-									"                    \"sku\": { \"type\": \"number\" },\r",
-									"                    \"description\": { \"type\": \"string\" }\r",
-									"                },\r",
-									"                \"required\": [\"id\", \"name\", \"price\", \"sku\", \"description\"]\r",
-									"            }\r",
-									"        };\r",
-									"        pm.response.to.have.jsonSchema(jsonSchema);\r",
-									"    });\r",
+									"const response = pm.sendRequest({\r",
+									"    url: requestUrl,\r",
+									"    method: 'GET'\r",
 									"});\r",
-									""
+									"\r",
+									"pm.test('Schema validation', () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})\r",
+									"pm.test('Response time should be less than 200ms', () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"})\r",
+									"pm.test('Response status is 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test('Content-Type is present', () => {\r",
+									"    pm.expect(pm.response.headers.has('Content-Type')).to.be.true;\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -238,22 +177,24 @@
 							"script": {
 								"exec": [
 									"const baseUrl = pm.variables.get('baseUrl');\r",
-									"const endpoint = \"/users?page=1&pageSize=2\";\r",
+									"const endpoint = \"/products\";\r",
+									"const pageSize = 2;\r",
 									"\r",
 									"pm.sendRequest({\r",
-									"    url: baseUrl + endpoint,\r",
+									"    url: `${baseUrl}${endpoint}?page=1&pageSize=${pageSize}`,\r",
 									"    method: 'GET',\r",
 									"}, function (err, response) {\r",
-									"    const responseBody = response.json();\r",
+									"    const responseBody = response.json();    \r",
 									"    pm.test('Response status is 200', function () {\r",
 									"        pm.response.to.have.status(200);\r",
 									"    });\r",
 									"    pm.test(\"Response time is less than 200ms\", function () {\r",
 									"        pm.expect(response.responseTime).to.be.below(200);\r",
 									"    });\r",
-									"    pm.test('Exactly two products on the page', function () {\r",
-									"        pm.expect(responseBody.length).to.eql(2);\r",
+									"    pm.test('Page size is correct', function () {\r",
+									"        pm.expect(responseBody.length).to.eql(pageSize);\r",
 									"    });\r",
+									"\r",
 									"    pm.test('JSON schema validation', function () {\r",
 									"        var jsonSchema = {\r",
 									"            \"type\": \"array\",\r",
@@ -262,11 +203,10 @@
 									"                \"properties\": {\r",
 									"                    \"id\": { \"type\": \"number\" },\r",
 									"                    \"name\": { \"type\": \"string\" },\r",
-									"                    \"price\": { \"type\": \"number\" },\r",
-									"                    \"sku\": { \"type\": \"number\" },\r",
-									"                    \"description\": { \"type\": \"string\" }\r",
+									"                    'sku': { 'type': 'integer' },\r",
+									"                    'description': { 'type': 'string' }\r",
 									"                },\r",
-									"                \"required\": [\"id\", \"name\", \"price\", \"sku\", \"description\"]\r",
+									"                \"required\": [\"id\", \"name\", \"sku\", \"description\"]\r",
 									"            }\r",
 									"        };\r",
 									"        pm.response.to.have.jsonSchema(jsonSchema);\r",
@@ -314,13 +254,30 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"var schema = {\r",
+									"    'type': 'array',\r",
+									"    'items': [{\r",
+									"            'type': 'object',\r",
+									"            'properties': {\r",
+									"                'id': { 'type': 'integer' },\r",
+									"                'name': { 'type': 'string' },\r",
+									"                'sku': { 'type': 'integer' },\r",
+									"                'description': { 'type': 'string' }\r",
+									"            },\r",
+									"            'required': ['id','name','sku','description']\r",
+									"        }]\r",
+									"};\r",
 									"function testSortingOrder(sortOrder, sortKey) {\r",
 									"    var url = pm.variables.get(\"baseUrl\") + `/products?sortOrder=${sortOrder}&sortKey=${sortKey}`;\r",
 									"    pm.sendRequest({\r",
 									"        url: url,\r",
 									"        method: 'GET'\r",
 									"    }, function (err, response) {\r",
-									"        pm.expect(response.code).to.equal(200);\r",
+									"        if (err) {\r",
+									"            console.log(err);\r",
+									"            return;\r",
+									"        }\r",
+									"        pm.expect(response.code).to.equal(200, \"Expected response code to be 200\");\r",
 									"        var products = response.json();\r",
 									"        var compareFunction;\r",
 									"        if (sortOrder === 'ASC') {\r",
@@ -338,28 +295,31 @@
 									"        }\r",
 									"    });\r",
 									"}\r",
+									"function test(){\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(pm.response.headers.has('Content-Type')).to.be.true;\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"}\r",
+									"\r",
 									"pm.test(\"Test Sorting ASC by name\", function () {\r",
 									"    testSortingOrder('ASC', 'name');\r",
+									"    test();\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Test Sorting DESC by name\", function () {\r",
 									"    testSortingOrder('DESC', 'name');\r",
+									"    test();\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Test Sorting ASC by id\", function () {\r",
 									"    testSortingOrder('ASC', 'id');\r",
+									"    test();\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Test Sorting DESC by id\", function () {\r",
 									"    testSortingOrder('DESC', 'id');\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Test Sorting ASC by price\", function () {\r",
-									"    testSortingOrder('ASC', 'price');\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Test Sorting DESC by price\", function () {\r",
-									"    testSortingOrder('DESC', 'price');\r",
+									"    test();\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -441,13 +401,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/3",
+							"raw": "{{baseUrl}}/products/4",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"3"
+								"4"
 							]
 						}
 					},
@@ -461,9 +421,7 @@
 							"script": {
 								"exec": [
 									"const baseUrl = pm.variables.get('baseUrl');\r",
-									"\r",
 									"const endpoint = '/products';\r",
-									"\r",
 									"const updateData = {\r",
 									"    'id': 4,\r",
 									"    'name': 'banana',\r",
@@ -538,36 +496,45 @@
 							"script": {
 								"exec": [
 									"const baseUrl = pm.variables.get('baseUrl');\r",
-									"const endpoint = '/products';\r",
-									"const Data = {\r",
-									"    \"id\": 4,\r",
-									"    \"name\": \"banana\",\r",
-									"    \"price\": 27,\r",
-									"    \"sku\": 123321123,\r",
-									"    \"description\": \"changed description\"\r",
+									"var schema = {\r",
+									"    'type': 'object',\r",
+									"    'items': [{\r",
+									"            'type': 'object',\r",
+									"            'properties': {\r",
+									"                'id': { 'type': 'integer' },\r",
+									"                'name': { 'type': 'string' },\r",
+									"                'sku': { 'type': 'integer' }\r",
+									"            },\r",
+									"            'required': [\r",
+									"                'id',\r",
+									"                'name',\r",
+									"                'sku'\r",
+									"            ]\r",
+									"        }]\r",
 									"};\r",
+									"\r",
 									"pm.sendRequest({\r",
-									"    url: `${baseUrl}${endpoint}/${Data.id}`,\r",
+									"    url: `${baseUrl}/products/4`, \r",
 									"    method: 'DELETE',\r",
-									"}, function (err, response) {\r",
-									"    pm.test(\"Response time is less than 200ms\", function () {\r",
-									"        pm.expect(response.responseTime).to.be.below(200);\r",
-									"    });\r",
-									"    pm.test(\"Status code is 200\", function () {\r",
-									"        pm.expect(response.code).to.equal(200);\r",
-									"    });\r",
-									"    pm.test(\"Content-Type is present\", function () {\r",
-									"        pm.expect(response.headers.has(\"Content-Type\")).to.be.true;\r",
-									"    });\r",
-									"    pm.sendRequest({\r",
-									"        url: `${baseUrl}${endpoint}/${Data.id}`,\r",
-									"        method: 'GET'\r",
-									"    }, function (err, getProductResponse) {\r",
-									"        pm.test(\"Verify product was deleted\", function () {\r",
-									"            pm.expect(getProductResponse.code).to.equal(404);\r",
+									"}, (err, response) => {\r",
+									"    pm.test('Schema validation', () => {\r",
+									"        pm.response.to.have.jsonSchema(schema);\r",
+									"    })\r",
+									"    pm.test(\"Response time should be less than 200ms\", () => {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    })\r",
+									"    pm.test(\"Response status should be 200\", () => {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    })\r",
+									"    pm.test(\"Negative test: checking if product is deleted\", () => {\r",
+									"        pm.sendRequest({\r",
+									"            url: `${baseUrl}/products/4`,\r",
+									"            method: 'GET',\r",
+									"        }, (err, getResponse) => {\r",
+									"            pm.expect(getResponse.code).to.equal(404);\r",
 									"        });\r",
 									"    });\r",
-									"})"
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -577,13 +544,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/5",
+							"raw": "{{baseUrl}}/products/4",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"5"
+								"4"
 							]
 						}
 					},
@@ -595,48 +562,76 @@
 			"name": "Orders",
 			"item": [
 				{
-					"name": "List orders",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/orders",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"orders"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get order by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/orders/3",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"orders",
-								"3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Create order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = '/orders';\r",
+									"const requestUrl = baseUrl + endpoint;\r",
+									"const newProduct = {\r",
+									"    'name': 'order4',\r",
+									"    'sku': 123425445656765\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: baseUrl + endpoint,\r",
+									"    method: 'POST',\r",
+									"    header: { 'Content-Type': 'application/json' },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(newProduct)\r",
+									"    }\r",
+									"}, function (err, response) {\r",
+									"    pm.test('Response time is less than 200ms', function () {\r",
+									"        pm.expect(response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test('Status code is 201', function () {\r",
+									"        pm.expect(response.code).to.equal(201);\r",
+									"    });\r",
+									"    pm.test('Content-Type is present', function () {\r",
+									"        pm.expect(response.headers.has('Content-Type')).to.be.true;\r",
+									"    });\r",
+									"\r",
+									"    const createdProductId = response.json().id;\r",
+									"    pm.sendRequest({\r",
+									"        url: `${baseUrl}/orders/${createdProductId}`,\r",
+									"        method: 'GET'\r",
+									"    }, function (err, getProductResponse) {\r",
+									"        const createdProductData = getProductResponse.json();\r",
+									"        var schema = {\r",
+									"            \"type\": \"object\",\r",
+									"            \"properties\": {\r",
+									"                \"id\": {\"type\": \"integer\"},\r",
+									"                \"name\": {\"type\": \"string\"},\r",
+									"                \"sku\": {\"type\": \"integer\"}\r",
+									"            },\r",
+									"            \"required\": [\"id\", \"name\", \"sku\"]\r",
+									"        };\r",
+									"        pm.expect(getProductResponse.code).to.equal(200);\r",
+									"        pm.test('Created order verification', () => {\r",
+									"            pm.expect(createdProductData.name).to.eql(newProduct.name);\r",
+									"            pm.expect(createdProductData.sku).to.eql(newProduct.sku);\r",
+									"        })\r",
+									"        pm.test('Created order Schema validation', () => {\r",
+									"            pm.expect(createdProductData).to.have.jsonSchema(schema);\r",
+									"        })\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"raw": "// {\r\n//     \"name\": \"order5\",\r\n//     \"sku\": 123425445656765\r\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -656,7 +651,349 @@
 					"response": []
 				},
 				{
+					"name": "List orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = '/orders';\r",
+									"const requestUrl = baseUrl + endpoint;\r",
+									"var schema = {\r",
+									"    \"type\": \"array\",\r",
+									"    \"items\": [\r",
+									"        {\r",
+									"            \"type\": \"object\",\r",
+									"            \"properties\": {\r",
+									"                \"id\": {\"type\": \"integer\"},\r",
+									"                \"name\": {\"type\": \"string\"},\r",
+									"                \"sku\": {\"type\": \"integer\"}\r",
+									"            },\r",
+									"            \"required\": [\"id\", \"name\", \"sku\"]\r",
+									"        }]\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: requestUrl,\r",
+									"    method: 'GET'\r",
+									"}, (response) => {\r",
+									"    pm.test(\"Schema validation\", () => {\r",
+									"        pm.response.to.have.jsonSchema(schema);\r",
+									"    });\r",
+									"    pm.test(\"Response time should be less than 200ms\", () => {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test(\"Status code should be 200\", () => {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"    pm.test('Content-Type is present', () => {\r",
+									"        pm.expect(pm.response.headers.has('Content-Type')).to.be.true;\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = '/orders';\r",
+									"const requestUrl = `${baseUrl}${endpoint}`;\r",
+									"const productId = 3;\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"items\": [\r",
+									"        {\r",
+									"            \"type\": \"object\",\r",
+									"            \"properties\": {\r",
+									"                \"id\": {\"type\": \"integer\"},\r",
+									"                \"name\": {\"type\": \"string\"},\r",
+									"                \"sku\": {\"type\": \"integer\"}\r",
+									"            },\r",
+									"            \"required\": [\"id\", \"name\", \"sku\"]\r",
+									"        }]\r",
+									"};\r",
+									"pm.sendRequest({\r",
+									"    url: requestUrl,\r",
+									"    method: 'GET'\r",
+									"}, (err, response) => {\r",
+									"    pm.test(\"Schema validation\", () => {\r",
+									"        pm.response.to.have.jsonSchema(schema);\r",
+									"    });\r",
+									"    pm.test(\"Response time should be less than 200ms\", () => {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test(\"Status code should be 200\", () => {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"    pm.test('Content-Type is present', () => {\r",
+									"        pm.expect(pm.response.headers.has('Content-Type')).to.be.true;\r",
+									"    });\r",
+									"    pm.test('Product with specific ID is present', () => {\r",
+									"        const responseBody = pm.response.json();\r",
+									"        const productResponseId = responseBody.id; \r",
+									"        pm.expect(productResponseId).to.equal(productId);\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sorting",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var schema = {\r",
+									"    \"type\": \"array\",\r",
+									"    \"items\": [\r",
+									"        {\r",
+									"            \"type\": \"object\",\r",
+									"            \"properties\": {\r",
+									"                \"id\": {\"type\": \"integer\"},\r",
+									"                \"name\": {\"type\": \"string\"},\r",
+									"                \"sku\": {\"type\": \"integer\"}\r",
+									"            },\r",
+									"            \"required\": [\"id\", \"name\", \"sku\"]\r",
+									"        }]\r",
+									"};\r",
+									"function testSortingOrder(sortOrder, sortKey) {\r",
+									"    var url = pm.variables.get(\"baseUrl\") + `/orders?sortOrder=${sortOrder}&sortKey=${sortKey}`;\r",
+									"    pm.sendRequest({\r",
+									"        url: url,\r",
+									"        method: 'GET'\r",
+									"    }, function (err, response) {\r",
+									"        pm.expect(response.code).to.equal(200, \"Expected response code to be 200\");\r",
+									"        var orders = response.json();\r",
+									"        var compareFunction;\r",
+									"        if (sortOrder === 'ASC') {\r",
+									"            compareFunction = function(a, b) {\r",
+									"                return a[sortKey] <= b[sortKey];\r",
+									"            };\r",
+									"        } \r",
+									"        if (sortOrder === 'DESC') {\r",
+									"            compareFunction = function(a, b) {\r",
+									"                return a[sortKey] >= b[sortKey];\r",
+									"            };\r",
+									"        }\r",
+									"        for (var i = 0; i < orders.length - 1; i++) {\r",
+									"            pm.expect(compareFunction(orders[i], orders[i + 1])).to.be.true;\r",
+									"        }\r",
+									"    });\r",
+									"}\r",
+									"function test(){\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(pm.response.headers.has('Content-Type')).to.be.true;\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"}\r",
+									"pm.test(\"Test Sorting ASC by name\", function () {\r",
+									"    testSortingOrder('ASC', 'name');\r",
+									"    test();\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test Sorting DESC by name\", function () {\r",
+									"    testSortingOrder('DESC', 'name');\r",
+									"    test();\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test Sorting ASC by id\", function () {\r",
+									"    testSortingOrder('ASC', 'id');\r",
+									"    test();\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test Sorting DESC by id\", function () {\r",
+									"    testSortingOrder('DESC', 'id');\r",
+									"    test();\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders?sortOrder=DESC&sortKey=id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "sortOrder",
+									"value": "DESC"
+								},
+								{
+									"key": "sortKey",
+									"value": "id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = \"/orders\";\r",
+									"const pageSize = 2;\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${baseUrl}${endpoint}?page=1&pageSize=${pageSize}`,\r",
+									"    method: 'GET',\r",
+									"}, function (err, response) {\r",
+									"    const responseBody = response.json();    \r",
+									"    pm.test('Response status is 200', function () {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"    pm.test(\"Response time is less than 200ms\", function () {\r",
+									"        pm.expect(response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test('Page size is correct', function () {\r",
+									"        pm.expect(responseBody.length).to.eql(pageSize);\r",
+									"    });\r",
+									"\r",
+									"    pm.test('JSON schema validation', function () {\r",
+									"        var jsonSchema = {\r",
+									"            \"type\": \"array\",\r",
+									"            \"items\": {\r",
+									"                \"type\": \"object\",\r",
+									"                \"properties\": {\r",
+									"                    \"id\": { \"type\": \"number\" },\r",
+									"                    \"name\": { \"type\": \"string\" },\r",
+									"                    'sku': { 'type': 'integer' }\r",
+									"                },\r",
+									"                \"required\": [\"id\", \"name\", \"sku\"]\r",
+									"            }\r",
+									"        };\r",
+									"        pm.response.to.have.jsonSchema(jsonSchema);\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders?page=1&pageSize=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = '/orders';\r",
+									"const updateData = {\r",
+									"    \"id\": 4,\r",
+									"    \"name\": \"order5\",\r",
+									"    \"sku\": 123425445656765\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${ baseUrl }${ endpoint }`,\r",
+									"    method: 'PUT'\r",
+									"}, function (err, response) {\r",
+									"    pm.test('Response time is less than 200ms', function () {\r",
+									"        pm.expect(response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test('Status code is 200', function () {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"    pm.test('Content-Type is present', function () {\r",
+									"        pm.expect(response.headers.has('Content-Type')).to.be.true;\r",
+									"    });\r",
+									"    pm.test('Product was updated successfully', function () {\r",
+									"        pm.sendRequest({\r",
+									"            url: `${ baseUrl }${ endpoint }/${ updateData.id }`,\r",
+									"            method: 'GET'\r",
+									"        }, function (err, getProductResponse) {\r",
+									"            pm.expect(getProductResponse.code).to.equal(200);\r",
+									"            const updatedProductData = getProductResponse.json();\r",
+									"            pm.expect(updatedProductData.name).to.eql(updateData.name);\r",
+									"            pm.expect(updatedProductData.sku).to.eql(updateData.sku);\r",
+									"        });\r",
+									"    });\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -683,6 +1020,53 @@
 				},
 				{
 					"name": "Remove order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"items\": [\r",
+									"        {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"id\": {\"type\": \"integer\"},\r",
+									"            \"name\": {\"type\": \"string\"},\r",
+									"            \"sku\": {\"type\": \"integer\"}\r",
+									"        },\r",
+									"        \"required\": [\"id\", \"name\", \"sku\"]\r",
+									"    }]\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${baseUrl}/orders/4`, \r",
+									"    method: 'DELETE',\r",
+									"}, (err, response) => {\r",
+									"    pm.test('Schema validation', () => {\r",
+									"        pm.response.to.have.jsonSchema(schema);\r",
+									"    });\r",
+									"    pm.test(\"Response time should be less than 200ms\", () => {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test(\"Response status should be 200\", () => {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"    pm.test(\"Negative test: checking if order is deleted\", () => {\r",
+									"        pm.sendRequest({\r",
+									"            url: `${baseUrl}/orders/4`,\r",
+									"            method: 'GET',\r",
+									"        }, (err, getResponse) => {\r",
+									"            pm.expect(getResponse.code).to.equal(404);\r",
+									"        });\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -705,48 +1089,91 @@
 			"name": "Users",
 			"item": [
 				{
-					"name": "List users",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/users",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get user by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/users/3",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"users",
-								"3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = '/users';\r",
+									"const requestUrl = baseUrl + endpoint;\r",
+									"const newUser = {\r",
+									"    \"firstName\": \"Dream\",\r",
+									"    \"lastName\": \"Real\",\r",
+									"    \"email\": \"dream.real@gmail.com\",\r",
+									"    \"dateOfBirth\": \"2001-10-99\",\r",
+									"    \"emailVerified\": true,\r",
+									"    \"signUpDate\": \"2019-08-24\",\r",
+									"    \"status\": \"active\",\r",
+									"    \"level\": \"lord\"\r",
+									"}\r",
+									"pm.sendRequest({\r",
+									"    url: baseUrl + endpoint,\r",
+									"    method: 'POST',\r",
+									"    header: { 'Content-Type': 'application/json' },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(newUser)\r",
+									"    }\r",
+									"}, function (err, createUserResponse) {\r",
+									"    pm.test('Response time is less than 200ms', function () {\r",
+									"        pm.expect(createUserResponse.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test('Status code is 201', function () {\r",
+									"        pm.expect(createUserResponse.code).to.equal(201);\r",
+									"    });\r",
+									"    pm.test('Content-Type is present', function () {\r",
+									"        pm.expect(createUserResponse.headers.has('Content-Type')).to.be.true;\r",
+									"    });\r",
+									"\r",
+									"    const createdUserId = createUserResponse.json().id;\r",
+									"    pm.sendRequest({\r",
+									"        url: `${baseUrl}/users/${createdUserId}`,\r",
+									"        method: 'GET'\r",
+									"    }, function (err, getOrderResponse) {\r",
+									"        pm.expect(getOrderResponse.code).to.equal(200);\r",
+									"        const createdUserData = getOrderResponse.json();\r",
+									"        var schema = {\r",
+									"            \"type\": \"object\",\r",
+									"            \"properties\": {\r",
+									"                \"firstName\": {\"type\": \"string\"},\r",
+									"                \"lastName\": {\"type\": \"string\"},\r",
+									"                \"email\": {\"type\": \"string\"},\r",
+									"                \"dateOfBirth\": {\"type\": \"string\"},\r",
+									"                \"emailVerified\": {\"type\": \"boolean\"},\r",
+									"                \"signUpDate\": {\"type\": \"string\"},\r",
+									"                \"status\": {\"type\": \"string\"},\r",
+									"                \"level\": {\"type\": \"string\"}\r",
+									"            },\r",
+									"            \"required\": [\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"]\r",
+									"        }\r",
+									"        pm.test('Created user verification', () => {\r",
+									"            pm.expect(createdUserData.firstName).to.eql(newUser.firstName);\r",
+									"            pm.expect(createdUserData.lastName).to.eql(newUser.lastName);\r",
+									"            pm.expect(createdUserData.email).to.eql(newUser.email);\r",
+									"            pm.expect(createdUserData.dateOfBirth).to.eql(newUser.dateOfBirth);\r",
+									"            pm.expect(createdUserData.emailVerified).to.eql(newUser.emailVerified);\r",
+									"            pm.expect(createdUserData.signUpDate).to.eql(newUser.signUpDate);\r",
+									"            pm.expect(createdUserData.status).to.eql(newUser.status);\r",
+									"            pm.expect(createdUserData.level).to.eql(newUser.level);\r",
+									"        });\r",
+									"        pm.test('Created user Schema validation', () => {\r",
+									"            pm.expect(createdUserData).to.have.jsonSchema(schema);\r",
+									"        });\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Dream\",\r\n    \"lastName\": \"Real\",\r\n    \"email\": \"dream.real@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\"\r\n}",
+							"raw": "// {\r\n//     \"firstName\": \"Dream\",\r\n//     \"lastName\": \"Real\",\r\n//     \"email\": \"dream.real@gmail.com\",\r\n//     \"dateOfBirth\": \"2001-10-99\",\r\n//     \"emailVerified\": true,\r\n//     \"signUpDate\": \"2019-08-24\",\r\n//     \"status\": \"active\",\r\n//     \"level\": \"lord\"\r\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -766,7 +1193,375 @@
 					"response": []
 				},
 				{
+					"name": "List users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = '/users';\r",
+									"const requestUrl = baseUrl + endpoint;\r",
+									"var schema = {\r",
+									"    \"type\": \"array\",\r",
+									"    \"properties\": {\r",
+									"        \"firstName\": {\"type\": \"string\"},\r",
+									"        \"lastName\": {\"type\": \"string\"},\r",
+									"        \"email\": {\"type\": \"string\"},\r",
+									"        \"dateOfBirth\": {\"type\": \"string\"},\r",
+									"        \"emailVerified\": {\"type\": \"boolean\"},\r",
+									"        \"signUpDate\": {\"type\": \"string\"},\r",
+									"        \"status\": {\"type\": \"string\"},\r",
+									"        \"level\": {\"type\": \"string\"}\r",
+									"    },\r",
+									"    \"required\": [\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"]\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: requestUrl,\r",
+									"    method: 'GET'\r",
+									"}, (response) => {\r",
+									"    pm.test(\"Schema validation\", () => {\r",
+									"        pm.response.to.have.jsonSchema(schema);\r",
+									"    });\r",
+									"    pm.test(\"Response time should be less than 200ms\", () => {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test(\"Status code should be 200\", () => {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"    pm.test('Content-Type is present', () => {\r",
+									"        pm.expect(pm.response.headers.has('Content-Type')).to.be.true;\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = '/users';\r",
+									"const requestUrl = `${baseUrl}${endpoint}`;\r",
+									"const userId = 5;\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"firstName\": {\"type\": \"string\"},\r",
+									"        \"lastName\": {\"type\": \"string\"},\r",
+									"        \"email\": {\"type\": \"string\"},\r",
+									"        \"dateOfBirth\": {\"type\": \"string\"},\r",
+									"        \"emailVerified\": {\"type\": \"boolean\"},\r",
+									"        \"signUpDate\": {\"type\": \"string\"},\r",
+									"        \"status\": {\"type\": \"string\"},\r",
+									"        \"level\": {\"type\": \"string\"}\r",
+									"    },\r",
+									"    \"required\": [\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"]\r",
+									"};\r",
+									"pm.sendRequest({\r",
+									"    url: requestUrl,\r",
+									"    method: 'GET'\r",
+									"}, (err, response) => {\r",
+									"    pm.test(\"Schema validation\", () => {\r",
+									"        pm.response.to.have.jsonSchema(schema);\r",
+									"    });\r",
+									"    pm.test(\"Response time should be less than 200ms\", () => {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test(\"Status code should be 200\", () => {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"    pm.test('Content-Type is present', () => {\r",
+									"        pm.expect(pm.response.headers.has('Content-Type')).to.be.true;\r",
+									"    });\r",
+									"    pm.test('Product with specific ID is present', () => {\r",
+									"        const responseBody = pm.response.json();\r",
+									"        const productResponseId = responseBody.id; \r",
+									"        pm.expect(productResponseId).to.equal(userId);\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sorting",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var schema = {\r",
+									"    \"type\": \"array\",\r",
+									"    \"properties\": {\r",
+									"        \"firstName\": {\"type\": \"string\"},\r",
+									"        \"lastName\": {\"type\": \"string\"},\r",
+									"        \"email\": {\"type\": \"string\"},\r",
+									"        \"dateOfBirth\": {\"type\": \"string\"},\r",
+									"        \"emailVerified\": {\"type\": \"boolean\"},\r",
+									"        \"signUpDate\": {\"type\": \"string\"},\r",
+									"        \"status\": {\"type\": \"string\"},\r",
+									"        \"level\": {\"type\": \"string\"}\r",
+									"    },\r",
+									"    \"required\": [\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"]\r",
+									"};\r",
+									"function testSortingOrder(sortOrder, sortKey) {\r",
+									"    var url = pm.variables.get(\"baseUrl\") + `/users?sortOrder=${sortOrder}&sortKey=${sortKey}`;\r",
+									"    pm.sendRequest({\r",
+									"        url: url,\r",
+									"        method: 'GET'\r",
+									"    }, function (err, response) {\r",
+									"        var users = response.json();\r",
+									"        var compareFunction;\r",
+									"        if (sortOrder === 'ASC') {\r",
+									"            compareFunction = function(a, b) {\r",
+									"                return a[sortKey] <= b[sortKey];\r",
+									"            };\r",
+									"        } \r",
+									"        if (sortOrder === 'DESC') {\r",
+									"            compareFunction = function(a, b) {\r",
+									"                return a[sortKey] >= b[sortKey];\r",
+									"            };\r",
+									"        }\r",
+									"        for (var i = 1; i < users.length - 1; i++) { // Fixed index starting from 1\r",
+									"            pm.expect(compareFunction(users[i], users[i + 1])).to.be.true;\r",
+									"        }\r",
+									"    });\r",
+									"}\r",
+									"function test(){\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(pm.response.headers.has('Content-Type')).to.be.true;\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"}\r",
+									"pm.test(\"Test Sorting ASC by Last Name\", function () {\r",
+									"    testSortingOrder('ASC', 'lastName');\r",
+									"    test();\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test Sorting DESC by Last Name\", function () {\r",
+									"    testSortingOrder('DESC', 'lastName');\r",
+									"    test();\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test Sorting ASC by id\", function () {\r",
+									"    testSortingOrder('ASC', 'id');\r",
+									"    test();\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test Sorting DESC by id\", function () {\r",
+									"    testSortingOrder('DESC', 'id');\r",
+									"    test();\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test Sorting ASC by Date of Birth\", function () {\r",
+									"    testSortingOrder('ASC', 'dateOfBirth');\r",
+									"    test();\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test Sorting DESC by Date of Birth\", function () {\r",
+									"    testSortingOrder('DESC', 'dateOfBirth');\r",
+									"    test();\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users?sortOrder=DESC&sortKey=dateOfBirth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "sortOrder",
+									"value": "DESC"
+								},
+								{
+									"key": "sortKey",
+									"value": "dateOfBirth"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = \"/users\";\r",
+									"const pageSize = 2;\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${baseUrl}${endpoint}?page=1&pageSize=${pageSize}`,\r",
+									"    method: 'GET',\r",
+									"}, function (err, response) {\r",
+									"    const responseBody = response.json();    \r",
+									"    pm.test('Response status is 200', function () {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"    pm.test(\"Response time is less than 200ms\", function () {\r",
+									"        pm.expect(response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test('Page size is correct', function () {\r",
+									"        pm.expect(responseBody.length).to.eql(pageSize);\r",
+									"    });\r",
+									"\r",
+									"    pm.test('JSON schema validation', function () {\r",
+									"        var jsonSchema = {\r",
+									"            \"type\": \"array\",\r",
+									"            \"properties\": {\r",
+									"                \"id\": {\"type\": \"integer\"},\r",
+									"                \"firstName\": {\"type\": \"string\"},\r",
+									"                \"lastName\": {\"type\": \"string\"},\r",
+									"                \"email\": {\"type\": \"string\"},\r",
+									"                \"dateOfBirth\": {\"type\": \"string\"},\r",
+									"                \"emailVerified\": {\"type\": \"boolean\"},\r",
+									"                \"signUpDate\": {\"type\": \"string\"},\r",
+									"                \"status\": {\"type\": \"string\"},\r",
+									"                \"level\": {\"type\": \"string\"}\r",
+									"            },\r",
+									"            \"required\": [\"id\",\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"]\r",
+									"        };\r",
+									"        pm.response.to.have.jsonSchema(jsonSchema);\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users?page=1&pageSize=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"const endpoint = '/users';\r",
+									"const updateData = {\r",
+									"    \"firstName\": \"Ilon\",\r",
+									"    \"lastName\": \"Mask\",\r",
+									"    \"email\": \"ilon.mask@gmail.com\",\r",
+									"    \"dateOfBirth\": \"2001-10-99\",\r",
+									"    \"emailVerified\": true,\r",
+									"    \"signUpDate\": \"2019-08-24\",\r",
+									"    \"status\": \"active\",\r",
+									"    \"level\": \"lord\",\r",
+									"    \"id\": 10\r",
+									"};\r",
+									"pm.sendRequest({\r",
+									"    url: `${ baseUrl }${ endpoint }`,\r",
+									"    method: 'PUT'\r",
+									"}, function (err, response) {\r",
+									"    pm.test('Response time is less than 200ms', function () {\r",
+									"        pm.expect(response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test('Status code is 200', function () {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"    pm.test('Content-Type is present', function () {\r",
+									"        pm.expect(response.headers.has('Content-Type')).to.be.true;\r",
+									"    });\r",
+									"    pm.test('Product was updated successfully', function () {\r",
+									"        pm.sendRequest({\r",
+									"            url: `${ baseUrl }${ endpoint }/${ updateData.id }`,\r",
+									"            method: 'GET'\r",
+									"        }, function (err,response) {\r",
+									"            pm.expect(response.code).to.equal(200);\r",
+									"            const updatedUserData = response.json();\r",
+									"            pm.expect(updatedUserData.firstName).to.eql(updateData.firstName);\r",
+									"            pm.expect(updatedUserData.lastName).to.eql(updateData.lastName);\r",
+									"            pm.expect(updatedUserData.email).to.eql(updateData.email);\r",
+									"            pm.expect(updatedUserData.dateOfBirth).to.eql(updateData.dateOfBirth);\r",
+									"            pm.expect(updatedUserData.emailVerified).to.eql(updateData.emailVerified);\r",
+									"            pm.expect(updatedUserData.signUpDate).to.eql(updateData.signUpDate);\r",
+									"            pm.expect(updatedUserData.status).to.eql(updateData.status);\r",
+									"            pm.expect(updatedUserData.level).to.eql(updateData.level);\r",
+									"        });\r",
+									"    });\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -793,6 +1588,55 @@
 				},
 				{
 					"name": "Remove user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const baseUrl = pm.variables.get('baseUrl');\r",
+									"var schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"id\": {\"type\": \"integer\"},\r",
+									"        \"firstName\": {\"type\": \"string\"},\r",
+									"        \"lastName\": {\"type\": \"string\"},\r",
+									"        \"email\": {\"type\": \"string\"},\r",
+									"        \"dateOfBirth\": {\"type\": \"string\"},\r",
+									"        \"emailVerified\": {\"type\": \"boolean\"},\r",
+									"        \"signUpDate\": {\"type\": \"string\"},\r",
+									"        \"status\": {\"type\": \"string\"},\r",
+									"        \"level\": {\"type\": \"string\"}\r",
+									"    },\r",
+									"    \"required\": [\"id\",\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"]\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${baseUrl}/users/10`, \r",
+									"    method: 'DELETE',\r",
+									"}, (err, response) => {\r",
+									"    pm.test('Schema validation', () => {\r",
+									"        pm.response.to.have.jsonSchema(schema);\r",
+									"    });\r",
+									"    pm.test(\"Response time should be less than 200ms\", () => {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"    });\r",
+									"    pm.test(\"Response status should be 200\", () => {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"    pm.test(\"Negative test: checking if user is deleted\", () => {\r",
+									"        pm.sendRequest({\r",
+									"            url: `${baseUrl}/users/10`,\r",
+									"            method: 'GET',\r",
+									"        }, (err, getResponse) => {\r",
+									"            pm.expect(getResponse.code).to.equal(404);\r",
+									"        });\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
